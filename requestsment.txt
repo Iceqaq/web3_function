@@ -1,0 +1,6 @@
+numpy
+requests
+openai
+scipy
+bs4
+httpx

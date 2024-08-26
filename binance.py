@@ -2,6 +2,8 @@ import httpx
 import numpy as np
 from scipy import stats
 
+
+#https://binance-docs.github.io/apidocs/futures/cn/#4d050dd845
 def determine_trend(data):
     # 创建特征矩阵（X）和目标向量（y）
     X = np.arange(len(data)).reshape(-1, 1)
@@ -29,10 +31,14 @@ def fetch_data(coin,time):
     # 多空持仓人数比
     url3 = f'https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol={coin}&period={time}'
 
+    proxies = {
+        "http://": "socks5://127.0.0.7:7890",
+        "https://": "socks5://127.0.0.7:7890",
+    }
     urls = [url1, url2, url3]
     results = []
     for url in urls:
-        response = httpx.get(url)
+        response = httpx.get(url, proxies=proxies)
         if response.status_code == 200:
             results.append(response.json())
         else:
@@ -69,3 +75,8 @@ def binance_get(coins,time):
         binance_result.append(CC)
 
     return binance_result
+
+##testing
+# b_coins=['BTCUSDT','ETHUSDT']
+# b_times='15m'
+# binance_results=binance_get(b_coins,b_times)
